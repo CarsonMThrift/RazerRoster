@@ -1,202 +1,209 @@
-class App {
-  constructor(selectors) {
-    this.products = []
-    this.max = 0
-    this.list = document
-      .querySelector(selectors.listSelector)
-    this.template = document
-      .querySelector(selectors.templateSelector)
-    document
-      .querySelector(selectors.formSelector)
-      .addEventListener('submit', this.addProductViaForm.bind(this))
+const JeffApp = {
+    init(selectors) {
+        //Dictionary to keep all of the images straight
+        this.objectArr = [
+            { Name: "Razer Blade Pro", Image: "ProductImages/rzrbladepro.png" },
+            { Name: "Razer Blade", Image: "ProductImages/rzrblade.jpg" },
+            { Name: "Razer Blade Stealth", Image: "ProductImages/rzrbladestealth.jpg" },
+            { Name: "Razer Mamba", Image: "ProductImages/rzrmamba.png" },
+            { Name: "Razer Lancehead", Image: "ProductImages/rzrlancehead.jpg" },
+            { Name: "Jeff Goldblum", Image: "ProductImages/jeffG.jpg" }
 
-    this.load()
-  }
+        ];
 
-  load() {
-    // Get the JSON string out of localStorage
-    const productsJSON = localStorage.getItem('products')
+        //array to keep products on so there is a reference to them
+        this.productArr = []
+        this.max = 0
+        this.list = document.querySelector(selectors.listSelector)
+        // this.template = document.querySelector(selectors.templateSelector)
+        document
+            .querySelector(selectors.formSelector)
+            .addEventListener('submit', this.addProductViaForm.bind(this))
 
-    // Turn that into an array
-    const productsArray = JSON.parse(productsJSON)
+        this.load()
 
-    // Set this.products to that array
-    if (productsArray) {
-      productsArray
-        .reverse()
-        .map(this.addProduct.bind(this))
+    },
+
+    getImage(productName) {
+
+        for (i = 0; i < this.objectArr.length; i++) {
+            if (this.objectArr[i].Name == productName) {
+                console.log(this.objectArr[i].Image)
+                return this.objectArr[i].Image
+            }
+        }
+        return "ProductImages/RazerLogoGreen.png"
+
+
+    },
+    addProduct(product) {
+
+        product.image = this.getImage(product.name)
+
+        //add product to kept array
+        this.productArr.push(product)
+        const listItem = this.renderListItem(product)
+        this.list.appendChild(listItem)
+        ++this.max
+
+        const buttonList = listItem.childNodes
+
+        buttonList[1].addEventListener('click', this.deleteProduct.bind(this))
+        buttonList[2].addEventListener('click', this.favProduct.bind(this))
+        buttonList[3].addEventListener('click', this.moveDownProduct.bind(this, product))
+        buttonList[4].addEventListener('click', this.moveUpProduct.bind(this, product))
+
+        this.save()
+
+    },
+
+    addProductViaForm(ev) {
+        ev.preventDefault()
+        const f = ev.target
+        console.log(f)
+        const product = {
+            id: this.max + 1,
+            name: f.productName.value,
+            fav: false,
+        }
+
+        this.addProduct(product)
+
+        f.reset()
+
+    },
+
+    save() {
+        localStorage
+            .setItem('products', JSON.stringify(this.productArr))
+
+    },
+
+    load() {
+        // Get the JSON string out of localStorage
+        const productsJSON = localStorage.getItem('products')
+
+        // Turn that into an array
+        const productsArray = JSON.parse(productsJSON)
+
+        // Set this.flicks to that array
+        if (productsArray) {
+            productsArray
+                .reverse()
+                .map(this.addProduct.bind(this))
+        }
+
+    },
+
+    deleteProduct(ev) {
+        ev.preventDefault()
+        const m = ev.target.parentElement
+        const listItem = m.parentElement
+        const index = m.className
+        this.productArr.splice(index, 1)
+
+        listItem.outerHTML = ''
+
+    },
+    favProduct(ev) {
+        ev.preventDefault()
+        const m = ev.target.parentElement
+        const listItem = m.parentElement
+
+        if (listItem.style.backgroundColor != 'pink') {
+            listItem.style.backgroundColor = 'pink'
+        } else {
+            listItem.style.backgroundColor = 'white'
+
+        }
+
+    },
+
+    moveUpProduct(product, ev) {
+        ev.preventDefault()
+        const listItem = ev.target.closest('li')
+
+        if (listItem != this.productArr[0]) {
+            //Modifying list object
+            this.list.insertBefore(listItem, listItem.previousElementSibling)
+
+            //CONSIDER: After second click, the id cannot be read
+            //Modifying array to match
+            const currentIndex = this.productArr.findIndex((listItem, i) => {
+                return listItem.id === product.id
+            })
+
+            //Swap the elements
+            const toMoveUp = this.productArr[currentIndex]
+            this.productArr[currentIndex] = this.productArr[currentIndex - 1]
+            this.productArr[currentIndex - 1] = toMoveUp
+        }
+
+    },
+    moveDownProduct(product, ev) {
+        ev.preventDefault()
+        const listItem = ev.target.closest('li')
+
+        if (listItem != this.productArr[this.productArr.length - 1]) {
+
+            //Modifying list object
+            this.list.insertBefore(listItem.nextSibling, listItem)
+
+            //Modifying array to match
+            const currentIndex = this.productArr.findIndex((listItem, i) => {
+                return listItem.id === product.id
+            })
+
+            //Swap the elements
+            const toMoveDown = this.productArr[currentIndex]
+            this.productArr[currentIndex] = this.productArr[currentIndex + 1]
+            this.productArr[currentIndex + 1] = toMoveDown
+
+        }
+
+    },
+    renderListItem(product) {
+        const item = document.createElement('li')
+        item.className = product.id
+        item.textContent = product.name
+        item.dataset.id = product.id
+
+        //buttons
+        const delButton = document.createElement('button')
+        delButton.className = 'deleteButton'
+        const favButton = document.createElement('button')
+        favButton.className = 'favButton'
+        const downButton = document.createElement('button')
+        downButton.className = 'downButton'
+        const upButton = document.createElement('button')
+        upButton.className = 'upButton'
+
+        //icons
+        delButton.innerHTML = '<img src="icons/cancel.png" alt="Delete" />'
+        favButton.innerHTML = '<img src="icons/heart.png" alt="Favorite" />'
+        downButton.innerHTML = '<img src="icons/down-arrow.png" alt="DownArrow" />'
+        upButton.innerHTML = '<img src="icons/up-arrow.png" alt="UpArrow" />'
+
+
+        const imageToApp = document.createElement('img')
+        imageToApp.src = product.image
+        imageToApp.className = 'prdImage'
+
+        //adding buttons to list item
+        item.appendChild(delButton)
+        item.appendChild(favButton)
+        item.appendChild(downButton)
+        item.appendChild(upButton)
+
+
+        item.appendChild(imageToApp)
+
+
+        return item
     }
-  }
-
-  addProduct(product) {
-    const listItem = this.renderListItem(product)
-    this.list
-      .insertBefore(listItem, this.list.firstChild)
-    
-    if (product.id > this.max) {
-      this.max = product.id
-    }
-    this.products.unshift(product)
-    this.save()
-  }
-
-  addProductViaForm(ev) {
-    ev.preventDefault()
-    const f = ev.target
-    const product = {
-      id: this.max + 1,
-      name: f.productName.value,
-      fav: false,
-    }
-
-    this.addProduct(product)
-
-    f.reset()
-  }
-
-  save() {
-    localStorage
-      .setItem('products', JSON.stringify(this.products))
-
-  }
-
-  renderListItem(product) {
-    const item = this.template.cloneNode(true)
-    item.classList.remove('template')
-    item.dataset.id = product.id
-    item
-      .querySelector('.product-name')
-      .textContent = product.name
-    item
-      .querySelector('.product-name')
-      .setAttribute('title', product.name)
-
-    if (product.fav) {
-      item.classList.add('fav')
-    }
-
-    item
-      .querySelector('.product-name')
-      .addEventListener('keypress', this.saveOnEnter.bind(this, product))
-
-    item
-      .querySelector('button.remove')
-      .addEventListener('click', this.removeProduct.bind(this))
-    item
-      .querySelector('button.fav')
-      .addEventListener('click', this.favProduct.bind(this, product))
-    item
-      .querySelector('button.move-up')
-      .addEventListener('click', this.moveUp.bind(this, product))
-    item
-      .querySelector('button.move-down')
-      .addEventListener('click', this.moveDown.bind(this, product))
-    item
-      .querySelector('button.edit')
-      .addEventListener('click', this.edit.bind(this, product))
-
-    return item
-  }
-
-  removeProduct(ev) {
-    const listItem = ev.target.closest('.product')
-
-    // Find the product in the array, and remove it
-    for (let i = 0; i < this.products.length; i++) {
-      const currentId = this.products[i].id.toString()
-      if (listItem.dataset.id === currentId) {
-        this.products.splice(i, 1)
-        break
-      }
-    }
-
-    listItem.remove()
-    this.save()
-  }
-
-  favProduct(product, ev) {
-    console.log(ev.currentTarget)
-    const listItem = ev.target.closest('.product')
-    product.fav = !product.fav
-
-    if (product.fav) {
-      listItem.classList.add('fav')
-    } else {
-      listItem.classList.remove('fav')
-    }
-    
-    this.save()
-  }
-
-  moveUp(product, ev) {
-    const listItem = ev.target.closest('.product')
-
-    const index = this.products.findIndex((currentproduct, i) => {
-      return currentproduct.id === product.id
-    })
-
-    if (index > 0) {
-      this.list.insertBefore(listItem, listItem.previousElementSibling)
-
-      const previousproduct = this.products[index - 1]
-      this.products[index - 1] = product
-      this.products[index] = previousproduct
-      this.save()
-    }
-  }
-
-  moveDown(product, ev) {
-    const listItem = ev.target.closest('.product')
-
-    const index = this.products.findIndex((currentproduct, i) => {
-      return currentproduct.id === product.id
-    })
-
-    if (index < this.products.length - 1) {
-      this.list.insertBefore(listItem.nextElementSibling, listItem)
-      
-      const nextproduct = this.products[index + 1]
-      this.products[index + 1] = product
-      this.products[index] =  nextproduct
-      this.save()
-    }
-  }
-
-  edit(product, ev) {
-    const listItem = ev.target.closest('.product')
-    const nameField = listItem.querySelector('.product-name')
-    const btn = listItem.querySelector('.edit.button')
-
-    const icon = btn.querySelector('i.fa')
-
-    if (nameField.isContentEditable) {
-      // make it no longer editable
-      nameField.contentEditable = false
-      icon.classList.remove('fa-check')
-      icon.classList.add('fa-pencil')
-      btn.classList.remove('success')
-
-      // save changes
-      product.name = nameField.textContent
-      this.save()
-    } else {
-      nameField.contentEditable = true
-      nameField.focus()
-      icon.classList.remove('fa-pencil')
-      icon.classList.add('fa-check')
-      btn.classList.add('success')
-    }
-  }
-
-  saveOnEnter(product, ev) {
-    if (ev.key === 'Enter') {
-      this.edit(product, ev)
-    }
-  }
 }
-
-const app = new App({
-  formSelector: '#product-form',
-  listSelector: '#product-list',
-  templateSelector: '.product.template',
+JeffApp.init({
+    formSelector: '#product-form',
+    listSelector: '#product-list',
+    //   templateSelector: '.template'
 })

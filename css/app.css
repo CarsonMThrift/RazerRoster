@@ -1,46 +1,64 @@
-.product.template {
-  display: none;
+
+h1 {
+
+    margin-top: 50px;
+    margin-bottom: 30px;
+    color: rgb(71,225,12);
+    font-family: 'Open Sans Condensed', sans-serif;
+
 }
 
-.product {
-  border: 1px solid #ddd;
-  clear: both;
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1.25rem;
-  transition: 0.25s;
+/*General format for the list items*/
+li {
+
+    list-style: none;
+    border: 1px solid black;
+    padding: 20px 20px;
+    margin-left: -20px;
+    margin-top: 15px;
+    background-color: white;
+    height: auto;
+    width: auto;
+
 }
 
-.product + .product {
-  border-top: 0;
+/*General format for the delete/fav buttons*/
+.deleteButton, .favButton, .downButton, .upButton {
+
+    float: right;
+    margin-right: 10px;
+    margin-bottom: 50px;
+
 }
 
-.product-name {
-  flex-grow: 1;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: calc(100% - 200px);
-  margin-right: 1rem;
+/* Darker background-color on hover */
+ul li:hover {
+    background:lightgreen;
 }
 
-.actions.button-group {
-  margin-bottom: 0;
-  white-space: nowrap;
+/*General bg color*/
+body {
+
+    background: url("razer_chroma_wallpaper.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+
 }
 
-.actions .button {
-  padding: .65em 0.8em;
+/*success button colors*/
+.button.success {
+
+    background-color: dimgray;
+    color: lightgreen;
+    margin-left: 20px;
+    display: inline-block;
+    float: right;
+
 }
 
-.product.fav {
-  background-color: #ffc656;
-  border-color: #ffa807;
+.input-group-field {
+
+    margin-bottom: 20px;
+
 }
 
-.product:first-child button.move-up,
-.product:last-child button.move-down {
-  background-color: #ddd;
-  color: #eee;
-  cursor: not-allowed;
-}

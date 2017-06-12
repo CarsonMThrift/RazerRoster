@@ -1,87 +1,42 @@
 <!DOCTYPE html>
 <html class="no-js">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Razer Roster</title>
+    <title>Cult of Razer</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/app.css">
-  </head>
-  <body>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
+    <link rel="stylesheet" href="css/app.css" />
+
+</head>
+
+<body>
     <div class="row">
-      <div class="medium-8 medium-offset-2 column">
-        <h1>Razer Roster</h1>
-        <form id="product-form">
-          <div class="input-group">
-            <input
-              type="text"
-              class="input-group-field"
-              name="productName"
-              placeholder="Name a Product"
-              autofocus
-              required
-            >
-            <div class="input-group-button">
-              <button 
-                class="success button"
-                type="submit"
-              >
-                <i
-                  class="fa fa-plus"
-                  aria-hidden="true"
-                ></i>
-              </button>
-            </div>
-          </div>
+        <div class="medium-8 medium-offset-2 column">
+            <h1>Cult of Razer</h1>
+            <form id="product-form">
+                <div class="input-group">
+                    <input class="input-group-field" type="text" name="productName" placeholder="Razer Product..." autofocus required />
+                    <input class="input-group-field" type="text" name="productType" placeholder="Product Type..." required />
+                </div>
+                <div class="input-group-button">
+                    <button class="success button" type="submit">Add Product</button>
+                </div>
+        </div>
         </form>
-      </div>
     </div>
-
+    </div>
     <div class="row">
-      <div class="medium-8 medium-offset-2 column">
-        <ul class="no-bullet" id="product-list"></ul>
-      </div>
+        <div class="medium-8 medium-offset-2 column">
+            <ul id="product-list"></ul>
+        </div>
     </div>
-
-    <li class="product template">
-      <span class="product-name"></span>
-      <span class="actions button-group">
-        <button class="edit button">
-          <i
-            class="fa fa-pencil"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <button class="fav button warning">
-          <i
-            class="fa fa-star"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <button class="move-up button">
-          <i
-            class="fa fa-arrow-up"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <button class="move-down button">
-          <i
-            class="fa fa-arrow-down"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <button class="remove button alert">
-          <i
-            class="fa fa-trash-o"
-            aria-hidden="true"
-          ></i>
-        </button>
-      </span>
-    </li>
 
     <script src="app.js"></script>
-  </body>
+</body>
+
 </html>
