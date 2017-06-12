@@ -89,7 +89,6 @@ const JeffApp = {
         // Set this.flicks to that array
         if (productsArray) {
             productsArray
-                .reverse()
                 .map(this.addProduct.bind(this))
         }
 
