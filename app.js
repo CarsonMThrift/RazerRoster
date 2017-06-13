@@ -1,4 +1,4 @@
-const JeffApp = {
+const RazerRosterApp = {
     init(selectors) {
         //Dictionary to keep all of the images straight
         this.objectArr = [
@@ -64,7 +64,9 @@ const JeffApp = {
         const product = {
             id: this.max + 1,
             name: f.productName.value,
+            // Make fav persist!
             fav: false,
+            // TODO: add the type of product to sort by
         }
 
         this.addProduct(product)
@@ -201,7 +203,7 @@ const JeffApp = {
         return item
     }
 }
-JeffApp.init({
+RazerRosterApp.init({
     formSelector: '#product-form',
     listSelector: '#product-list',
     //   templateSelector: '.template'
